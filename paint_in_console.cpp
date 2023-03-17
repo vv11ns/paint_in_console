@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <Windows.h>
 
 bool cmp_bytes(char* b1, char* b2, size_t size) {
@@ -29,7 +29,7 @@ void paint_line(HDC hdc, COLORREF color, int from_x, int from_y, int to_x, int t
     while((fromxbig ? dfrom_x > to_x : dfrom_x < to_x) || (fromybig ? dfrom_y > to_y : dfrom_y < to_y)) {
         dfrom_x += x_step;
         if (y_step > 1) {
-            for (double i = 0; i < y_step; ++i, ++dfrom_y) {
+            for (double i = 0; i < y_step; ++i, fromybig ? --dfrom_y : ++dfrom_y) {
                 SetPixel(hdc, (int)dfrom_x, (int)dfrom_y, color);
             }
         }
@@ -41,7 +41,7 @@ void paint_line(HDC hdc, COLORREF color, int from_x, int from_y, int to_x, int t
 }
 int main()
 {
-    const unsigned char color_x = 255, color_y = 255, color_z = 255; // RGB
+    const unsigned char color_x = 103, color_y = 173, color_z = 235; // RGB
     const COLORREF color = RGB(color_x, color_y, color_z);
     HWND hConsole_Window = GetConsoleWindow();
     HDC hConsole_Window_HDC = GetDC(hConsole_Window);
@@ -55,14 +55,13 @@ int main()
     POINT cursor_pos = {};
     RECT window_rect = {};
     while (true) {
-        //Sleep(1);
         HWND hActive_Window = GetForegroundWindow();
         if (hConsole_Window == hActive_Window) {
             if (GetAsyncKeyState(' ')) {
                 system("cls");
                 if (session) session = false;
             }
-            if (GetAsyncKeyState(MOUSEEVENTF_LEFTDOWN)) {
+            else if (GetAsyncKeyState(MOUSEEVENTF_LEFTDOWN)) {
                 GetCursorPos(&cursor_pos);
                 if (!cmp_bytes(&old_cursor_pos, &cursor_pos, sizeof(POINT))) {
                     GetWindowRect(hConsole_Window, &window_rect);
@@ -80,7 +79,10 @@ int main()
                     else if (session) session = false;
                 }
             }
-            else if (session) session = false;
+            else {
+                if (session) session = false;
+                Sleep(10);
+            }
         }
         else if (session) session = false;
     }
