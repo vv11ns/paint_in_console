@@ -76,7 +76,10 @@ int main()
                         old_cursor_pos = cursor_pos;
                         session = true;
                     }
-                    else if (session) session = false;
+                    else {
+                        if (session) session = false;
+                        Sleep(1);
+                    }
                 }
             }
             else {
@@ -84,7 +87,10 @@ int main()
                 Sleep(10);
             }
         }
-        else if (session) session = false;
+        else {
+            if (session) session = false;
+            Sleep(10);
+        }
     }
     return 0;
 }
